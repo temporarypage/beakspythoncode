@@ -46,35 +46,22 @@ def get_channel_info(api_key, channel_id):
 
 
 def main():
-    parser = argparse.ArgumentParser(description='Get YouTube channel information.')
-    parser.add_argument('identifier', nargs='?', help='The YouTube username, channel ID, or handle (starting with @).')
-    parser.add_argument('--key', required=False, help='Your Google API key.')
-    args = parser.parse_args()
+    # parse command-line arguments and get API key and channel ID...
 
-    if not args.identifier:
-        args.identifier = input("Enter the YouTube username, channel ID, or handle (starting with @): ")
-
-    api_key = args.key
-    if not api_key:
-        with open('api_key.txt', 'r') as f:
-            api_key = f.read().strip()
-
-    channel_id = get_channel_id(api_key, args.identifier)
-    if not channel_id:
-        print(f'Could not find channel ID for {args.identifier}')
-        return
-
+    # create a unique file name for the channel information
     file_name = f"{channel_id}.json"
     count = 1
     while os.path.exists(file_name):
         file_name = f"{channel_id}_{count}.json"
         count += 1
 
+    # get the channel information
     channel_info = get_channel_info(api_key, channel_id)
     if not channel_info:
         print(f'Could not find information for channel {channel_id}')
         return
 
+    # write the channel information to a file
     with open(file_name, 'w') as f:
         json.dump(channel_info, f, indent=4)
 
