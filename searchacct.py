@@ -1,7 +1,7 @@
 import os
 import urllib.request
 import json
-import datetime
+from datetime import datetime
 
 # Check for api_key.txt file
 if not os.path.isfile('api_key.txt'):
@@ -12,37 +12,40 @@ if not os.path.isfile('api_key.txt'):
 with open('api_key.txt', 'r') as f:
     api_key = f.readline().strip()
 
-# Function to convert month name to number
-def month_to_number(month_name):
-    return datetime.datetime.strptime(month_name, "%B").month
-
 # Ask for user input
 year = input('What Year? ')
+month = input('What Month? ')
+day = input('What Day? ')
+time = input('What Time? (e.g. 12:00AM) ')
 query = input('What Query? ')
 subs = input('How many Subs? ')
-published_before = input('Published Before? (e.g. Jan 1, 2022 12:00AM) ')
-published_after = input('Published After? (e.g. Feb 1, 2022 12:00AM) ')
+published_before = input('Published Before? ')
+if published_before == '':
+    published_before = '2005-01-01T00:00:00Z'
+published_after = input('Published After? ')
+if published_after == '':
+    now = datetime.now()
+    published_after = now.strftime('%Y-%m-%dT%H:%M:%SZ')
 
-# Convert month name to number
-if published_before:
-    published_before = datetime.datetime.strptime(published_before, '%b %d, %Y %I:%M%p')
-if published_after:
-    published_after = datetime.datetime.strptime(published_after, '%b %d, %Y %I:%M%p')
+if month:
+    months = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december']
+    if month.lower() in months:
+        month = str(months.index(month.lower()) + 1)
+    else:
+        month = str(int(month))
+if day:
+    day = str(int(day))
 
 url = 'https://www.googleapis.com/youtube/v3/search?part=snippet'
 url += f'&key={api_key}'
 
 if year:
-    url += f'&publishedAfter={year}-01-01T00:00:00Z'
-    url += f'&publishedBefore={year}-12-31T23:59:59Z'
+    url += f'&publishedAfter={year}-{month or 1}-{day or 1}T{time or "00:00:00Z"}'
+    url += f'&publishedBefore={year}-{month or 12}-{day or 31}T{time or "23:59:59Z"}'
 if query:
     url += f'&q={query}'
 if subs:
     url += f'&minSubscribers={subs}'
-if published_before:
-    url += f'&publishedBefore={published_before.isoformat()}Z'
-if published_after:
-    url += f'&publishedAfter={published_after.isoformat()}Z'
 
 with urllib.request.urlopen(url) as url:
     data = json.loads(url.read().decode())
