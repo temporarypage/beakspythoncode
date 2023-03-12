@@ -3,7 +3,6 @@ import requests
 import time
 import os
 import webbrowser
-import json
 
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
@@ -46,35 +45,40 @@ def get_channel_info(api_key, channel_id):
 
 
 def main():
-    # parse command-line arguments
-    parser = argparse.ArgumentParser()
-    parser.add_argument('api_key', help='YouTube Data API key')
-    parser.add_argument('channel_id', help='ID of the YouTube channel to retrieve information for')
+    parser = argparse.ArgumentParser(description='Get YouTube channel information.')
+    parser.add_argument('identifier', nargs='?', help='The YouTube username, channel ID, or handle (starting with @).')
+    parser.add_argument('--key', required=False, help='Your Google API key.')
     args = parser.parse_args()
-    
-    api_key = args.api_key
-    channel_id = args.channel_id
 
-    # create a unique file name for the channel information
+    if not args.identifier:
+        args.identifier = input("Enter the YouTube username, channel ID, or handle (starting with @): ")
+
+    api_key = args.key
+    if not api_key:
+        with open('api_key.txt', 'r') as f:
+            api_key = f.read().strip()
+
+    channel_id = get_channel_id(api_key, args.identifier)
+    if not channel_id:
+        print(f'Could not find channel ID for {args.identifier}')
+        return
+
     file_name = f"{channel_id}.json"
     count = 1
     while os.path.exists(file_name):
         file_name = f"{channel_id}_{count}.json"
         count += 1
 
-    # get the channel information
     channel_info = get_channel_info(api_key, channel_id)
     if not channel_info:
         print(f'Could not find information for channel {channel_id}')
         return
 
-    # write the channel information to a file
     with open(file_name, 'w') as f:
         json.dump(channel_info, f, indent=4)
 
     print(f'Channel information saved to {file_name}')
     webbrowser.open(file_name)
-
 
 
 if __name__ == '__main__':
