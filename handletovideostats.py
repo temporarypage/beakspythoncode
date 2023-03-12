@@ -19,8 +19,9 @@ with open(os.path.join(dir_path, "api_key.txt")) as f:
 print("Starting at newest, how many videos do you want statistics for?")
 number_of_videos = input()
 
-print("Enter Handle id:")
-handle_id = input()
+handle_id_input = input("Enter Handle id: ")
+handle_id = get_channel_id(api_key, handle_id_input) if handle_id_input.startswith('@') else handle_id_input
+
 
 # get channel ID based on handle ID
 url = f"https://yt.jaybee.digital/api/channels?part=channels&handle={handle_id[1:]}"
