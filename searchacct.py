@@ -1,6 +1,7 @@
 import os
 import urllib.request
 import json
+import datetime
 
 # Check for api_key.txt file
 if not os.path.isfile('api_key.txt'):
@@ -13,36 +14,36 @@ with open('api_key.txt', 'r') as f:
 
 # Ask for user input
 year = input('What Year? ')
-month = input('What Month? ')
-day = input('What Day? ')
-time = input('What Time? ')
+month = input('What Month? (Enter 1-12) ')
+day = input('What Day? (Enter 1-31) ')
+time = input('What Time? (Format: HH:MMAM/PM) ')
 query = input('What Query? ')
 subs = input('How many Subs? ')
+
+# Create datetime object from user input
+if year:
+    dt = datetime.datetime(int(year), int(month), int(day))
+    published_after = dt.isoformat() + 'Z'
+    published_before = (dt + datetime.timedelta(days=1)).isoformat() + 'Z'
+
+# Format time to ISO format
+if time:
+    time_obj = datetime.datetime.strptime(time, '%I:%M%p')
+    iso_time = time_obj.strftime('%H:%M:%S') + 'Z'
 
 url = 'https://www.googleapis.com/youtube/v3/search?part=snippet'
 url += f'&key={api_key}'
 
 if year:
-    if month:
-        if day:
-            if time:
-                date_time = f'{year}-{month}-{day}T{time}:00Z'
-                url += f'&publishedAfter={date_time}'
-                url += f'&publishedBefore={date_time}'
-            else:
-                date = f'{year}-{month}-{day}'
-                url += f'&publishedAfter={date}T00:00:00Z'
-                url += f'&publishedBefore={date}T23:59:59Z'
-        else:
-            url += f'&publishedAfter={year}-{month}-01T00:00:00Z'
-            url += f'&publishedBefore={year}-{month}-31T23:59:59Z'
-    else:
-        url += f'&publishedAfter={year}-01-01T00:00:00Z'
-        url += f'&publishedBefore={year}-12-31T23:59:59Z'
+    url += f'&publishedAfter={published_after}'
+    url += f'&publishedBefore={published_before}'
 if query:
     url += f'&q={query}'
 if subs:
     url += f'&minSubscribers={subs}'
+if time:
+    url += f'&publishedAfter={published_after[0:11]}{iso_time}'
+    url += f'&publishedBefore={published_before[0:11]}{iso_time}'
 
 with urllib.request.urlopen(url) as url:
     data = json.loads(url.read().decode())
