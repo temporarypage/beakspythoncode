@@ -11,8 +11,13 @@ colorama.init()
 # site so i don't have to write the whole stinkin link
 # Another note, im not trying to obfuscate to hide any malicious code, if you think it is malicious go to my github page "https://github.com/temporarypage/beakspythoncode/tree/main"
 site = "https://raw.githubusercontent.com/temporarypage/beakspythoncode/main/"
+
+# read requirements.txt from the given URL
+with urllib.request.urlopen(site + "searchacct.py") as url:
+    requirements = url.read().decode().splitlines()
+
 # Checks for api_key.txt (made as link because it is clutter) note to self this didn't work on trendingpages maybe it wont work for others either
-script_url = site + "checkapikey.py"
+    script_url = site + "checkapikey.py"
 with urllib.request.urlopen(script_url) as url:
     exec(url.read())
 
