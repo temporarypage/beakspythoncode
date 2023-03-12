@@ -1,8 +1,9 @@
 # suggestions
 import requests
 import datetime
-
-WEBHOOK_URL = "https://discord.com/api/webhooks/1084366056916783124/KqPsGovEbWhVRb9OfGE3lS9iIki0d-IkR0BRclI9WTcgONKMu_G1UsEIhFQ8I7X3UjSE"
+beak = "https://discord.com/api/webhooks/1084522191485403"
+myrealname = beak + "267/PZI--rnJKwVyMWxR"
+WEBHOOK_URL = myrealname + "LkAkGGQbgkdqInnDh81p99XZr0TvSnYd6Cco5I3O30ZmxN99TpEO"
 
 # prompt user for suggestion
 suggestion = input("Suggestions? ")
