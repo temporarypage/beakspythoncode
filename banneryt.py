@@ -1,3 +1,4 @@
+# Takes handle id converts to channel id then a few thingys later then boom channel info
 import argparse
 import requests
 import time
