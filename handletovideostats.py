@@ -1,4 +1,3 @@
-# This gets tag info, like info, etc from a handles newest video(s)
 import os
 import requests
 import json
@@ -18,17 +17,24 @@ with open(os.path.join(dir_path, "api_key.txt")) as f:
 n = int(input("Starting at newest, how many videos do you want statistics for? "))
 handle_id = input("Enter Handle id: ")
 url = f"https://www.googleapis.com/youtube/v3/search?key={api_key}&channelId={handle_id}&part=snippet,id&order=date&maxResults=50"
+
 try:
     response = requests.get(url)
     data = json.loads(response.text)
+    if 'items' not in data:
+        print("No videos found for the given handle.")
+        exit()
     video_ids = [item['id']['videoId'] for item in data['items'] if item['id']['kind'] == 'youtube#video']
     video_data = []
     for i in range(n):
         url = f"https://www.googleapis.com/youtube/v3/videos?key={api_key}&id={video_ids[i]}&part=snippet,statistics"
         response = requests.get(url)
         data = json.loads(response.text)
-        if 'tags' not in data['items'][0]['snippet']:
+        if 'items' not in data or len(data['items']) == 0:
             print(f"No data found for video with id {video_ids[i]}")
+            continue
+        if 'tags' not in data['items'][0]['snippet']:
+            print(f"No tags found for video with id {video_ids[i]}")
             continue
         video_data.append({
             "title": data['items'][0]['snippet']['title'],
