@@ -14,34 +14,26 @@ with open('api_key.txt', 'r') as f:
 
 # Ask for user input
 year = input('What Year? ')
-month = input('What Month? ')
-day = input('What Day? ')
-time = input('What Time? (e.g. 12:00AM) ')
-query = input('What Query? ')
-subs = input('How many Subs? ')
-published_before = input('Published Before? ')
-if published_before == '':
-    published_before = '2005-01-01T00:00:00Z'
-published_after = input('Published After? ')
-if published_after == '':
-    now = datetime.now()
-    published_after = now.strftime('%Y-%m-%dT%H:%M:%SZ')
+month = input('What Month? ').capitalize()
+if not month:
+    month = 'January'
+day = input('What Day? (if left blank it will automatically set to minimum dates for all) ') or '01'
+time = input('What Time? (e.g 12:00AM) ') or '12:00AM'
+query = input('What Query? (can be left blank) ')
+subs = input('How many Subs? (can be left blank)')
 
-if month:
-    months = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december']
-    if month.lower() in months:
-        month = str(months.index(month.lower()) + 1)
-    else:
-        month = str(int(month))
-if day:
-    day = str(int(day))
+try:
+    datetime.strptime(f'{year}-{month}-{day} {time}', '%Y-%B-%d %I:%M%p')
+except ValueError:
+    print('Invalid date/time format!')
+    exit()
 
 url = 'https://www.googleapis.com/youtube/v3/search?part=snippet'
 url += f'&key={api_key}'
 
 if year:
-    url += f'&publishedAfter={year}-{month or 1}-{day or 1}T{time or "00:00:00Z"}'
-    url += f'&publishedBefore={year}-{month or 12}-{day or 31}T{time or "23:59:59Z"}'
+    url += f'&publishedAfter={year}-{month}-{day}T{time}Z'
+    url += f'&publishedBefore={year}-{month}-{day}T{time}Z'
 if query:
     url += f'&q={query}'
 if subs:
