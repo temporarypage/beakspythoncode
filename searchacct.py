@@ -12,38 +12,37 @@ if not os.path.isfile('api_key.txt'):
 with open('api_key.txt', 'r') as f:
     api_key = f.readline().strip()
 
+# Function to convert month name to number
+def month_to_number(month_name):
+    return datetime.datetime.strptime(month_name, "%B").month
+
 # Ask for user input
 year = input('What Year? ')
-month = input('What Month? (Enter 1-12) ')
-day = input('What Day? (Enter 1-31) ')
-time = input('What Time? (Format: HH:MMAM/PM) ')
 query = input('What Query? ')
 subs = input('How many Subs? ')
+published_before = input('Published Before? (e.g. Jan 1, 2022 12:00AM) ')
+published_after = input('Published After? (e.g. Feb 1, 2022 12:00AM) ')
 
-# Create datetime object from user input
-if year:
-    dt = datetime.datetime(int(year), int(month), int(day))
-    published_after = dt.isoformat() + 'Z'
-    published_before = (dt + datetime.timedelta(days=1)).isoformat() + 'Z'
-
-# Format time to ISO format
-if time:
-    time_obj = datetime.datetime.strptime(time, '%I:%M%p')
-    iso_time = time_obj.strftime('%H:%M:%S') + 'Z'
+# Convert month name to number
+if published_before:
+    published_before = datetime.datetime.strptime(published_before, '%b %d, %Y %I:%M%p')
+if published_after:
+    published_after = datetime.datetime.strptime(published_after, '%b %d, %Y %I:%M%p')
 
 url = 'https://www.googleapis.com/youtube/v3/search?part=snippet'
 url += f'&key={api_key}'
 
 if year:
-    url += f'&publishedAfter={published_after}'
-    url += f'&publishedBefore={published_before}'
+    url += f'&publishedAfter={year}-01-01T00:00:00Z'
+    url += f'&publishedBefore={year}-12-31T23:59:59Z'
 if query:
     url += f'&q={query}'
 if subs:
     url += f'&minSubscribers={subs}'
-if time:
-    url += f'&publishedAfter={published_after[0:11]}{iso_time}'
-    url += f'&publishedBefore={published_before[0:11]}{iso_time}'
+if published_before:
+    url += f'&publishedBefore={published_before.isoformat()}Z'
+if published_after:
+    url += f'&publishedAfter={published_after.isoformat()}Z'
 
 with urllib.request.urlopen(url) as url:
     data = json.loads(url.read().decode())
