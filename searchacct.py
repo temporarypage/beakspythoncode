@@ -41,13 +41,14 @@ if subs:
 
 with urllib.request.urlopen(url) as url:
     data = json.loads(url.read().decode())
-
-for item in data['items']:
-    snippet = item['snippet']
-    channel_id = snippet['channelId']
-    channel_url = f'https://www.googleapis.com/youtube/v3/channels?id={channel_id}&part=snippet&key={api_key}'
-    with urllib.request.urlopen(channel_url) as channel_data:
-        channel_info = json.loads(channel_data.read().decode())
-    channel_title = channel_info['items'][0]['snippet']['title']
-    channel_year = channel_info['items'][0]['snippet']['publishedAt'][0:4]
-    print(f'{channel_title} - {channel_year}')
+    
+    # loop through each video and get the channel information
+    for item in data['items']:
+        snippet = item['snippet']
+        channel_id = snippet['channelId']
+        channel_url = f'https://www.googleapis.com/youtube/v3/channels?id={channel_id}&part=snippet&key={api_key}'
+        with urllib.request.urlopen(channel_url) as channel_data:
+            channel_info = json.loads(channel_data.read().decode())
+        channel_title = channel_info['items'][0]['snippet']['title']
+        channel_year = channel_info['items'][0]['snippet']['publishedAt'][0:4]
+        print(f'{channel_title} - {channel_year}')
