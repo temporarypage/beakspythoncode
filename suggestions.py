@@ -1,26 +1,15 @@
-# suggestions
-import requests
-import datetime
-beak = "https://discord.com/api/webhooks/1084522191485403"
-myrealname = beak + "267/PZI--rnJKwVyMWxR"
-WEBHOOK_URL = myrealname + "LkAkGGQbgkdqInnDh81p99XZr0TvSnYd6Cco5I3O30ZmxN99TpEO"
-
-# prompt user for suggestion
-suggestion = input("Suggestions? ")
-
-# get current timestamp
-timestamp = datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC")
-
-# create payload
-payload = {
-    "content": f"[{timestamp}] {suggestion}"
-}
-
-# post payload
-response = requests.post(WEBHOOK_URL, json=payload)
-
-# check if request was successful
-if response.status_code == 204:
-    print("Thanks for the suggestion, it will be reviewed and might be added!")
-else:
-    print("Error posting suggestion.")
+suggestion = input("Enter your suggestion: ")
+        timestamp = datetime.now(pytz.timezone('US/Eastern')).strftime('%Y-%m-%d %H:%M:%S %Z%z')
+        message = {
+        "content": f"New suggestion: {suggestion}\nTimestamp: {timestamp}",
+        "username": "Suggestion Bot",
+        "avatar_url": "https://i.imgur.com/4M34hi2.png"
+        }
+        headers = {
+        "Content-Type": "application/json"
+        }
+        webhook_url = "https://discord.com/api/webhooks/1084522191485403267/PZI--rnJKwVyMWxRLkAkGGQbgkdqInnDh81p99XZr0TvSnYd6Cco5I3O30ZmxN99TpEO"
+        request = urllib.request.Request(webhook_url, json.dumps(message).encode(), headers=headers)
+        response = urllib.request.urlopen(request)
+        print("Your suggestion will be reviewed and maybe be added to the list!")
+        send_suggestion()
