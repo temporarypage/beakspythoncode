@@ -46,7 +46,14 @@ def get_channel_info(api_key, channel_id):
 
 
 def main():
-    # parse command-line arguments and get API key and channel ID...
+    # parse command-line arguments
+    parser = argparse.ArgumentParser()
+    parser.add_argument('api_key', help='YouTube Data API key')
+    parser.add_argument('channel_id', help='ID of the YouTube channel to retrieve information for')
+    args = parser.parse_args()
+    
+    api_key = args.api_key
+    channel_id = args.channel_id
 
     # create a unique file name for the channel information
     file_name = f"{channel_id}.json"
@@ -67,6 +74,7 @@ def main():
 
     print(f'Channel information saved to {file_name}')
     webbrowser.open(file_name)
+
 
 
 if __name__ == '__main__':
