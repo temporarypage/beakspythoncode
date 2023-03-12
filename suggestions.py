@@ -1,3 +1,5 @@
+import requests
+half = "https://discord.com/api/webhooks/1084528717717581824/nibnXAuN460cD-f"
 suggestion = input("Enter your suggestion: ")
 timestamp = datetime.now(pytz.timezone('US/Eastern')).strftime('%Y-%m-%d %H:%M:%S %Z%z')
 message = {
@@ -8,7 +10,7 @@ message = {
 headers = {
     "Content-Type": "application/json"
 }
-webhook_url = "https://discord.com/api/webhooks/1084522191485403267/PZI--rnJKwVyMWxRLkAkGGQbgkdqInnDh81p99XZr0TvSnYd6Cco5I3O30ZmxN99TpEO"
+webhook_url = half + "bxC2eJSP__FquEpIBdwcg8KyKqNyXUIgnSXVk6cLbZacm6lGz1Rqv"
 request = urllib.request.Request(webhook_url, json.dumps(message).encode(), headers=headers)
 response = urllib.request.urlopen(request)
 print("Your suggestion will be reviewed and maybe be added to the list!")
