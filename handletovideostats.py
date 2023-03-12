@@ -14,27 +14,42 @@ if not os.path.exists(os.path.join(dir_path, "api_key.txt")):
 with open(os.path.join(dir_path, "api_key.txt")) as f:
     api_key = f.read().strip()
 
+# function to get channel ID from handle
+def get_channel_id(api_key, identifier):
+    if identifier.startswith('@'):
+        url = f"https://yt.jaybee.digital/api/channels?part=channels&handle={identifier[1:]}"
+        retries = 0
+        while True:
+            try:
+                response = requests.get(url)
+                if response.status_code == 200:
+                    channel_id = response.json()["items"][0]["id"]
+                    if channel_id.startswith("UC"):
+                        return channel_id
+            except:
+                retries += 1
+                if retries > 3:
+                    raise Exception("Failed to get channel ID")
+
 n = int(input("Starting at newest, how many videos do you want statistics for? "))
 handle_id = input("Enter Handle id: ")
-url = f"https://www.googleapis.com/youtube/v3/search?key={api_key}&channelId={handle_id}&part=snippet,id&order=date&maxResults=50"
+channel_id = get_channel_id(api_key, handle_id)
+if not channel_id:
+    print(f"Error: Could not get channel ID for handle {handle_id}")
+    exit()
 
+url = f"https://www.googleapis.com/youtube/v3/search?key={api_key}&channelId={channel_id}&part=snippet,id&order=date&maxResults=50"
 try:
     response = requests.get(url)
     data = json.loads(response.text)
-    if 'items' not in data:
-        print("No videos found for the given handle.")
-        exit()
     video_ids = [item['id']['videoId'] for item in data['items'] if item['id']['kind'] == 'youtube#video']
     video_data = []
     for i in range(n):
         url = f"https://www.googleapis.com/youtube/v3/videos?key={api_key}&id={video_ids[i]}&part=snippet,statistics"
         response = requests.get(url)
         data = json.loads(response.text)
-        if 'items' not in data or len(data['items']) == 0:
-            print(f"No data found for video with id {video_ids[i]}")
-            continue
         if 'tags' not in data['items'][0]['snippet']:
-            print(f"No tags found for video with id {video_ids[i]}")
+            print(f"No data found for video with id {video_ids[i]}")
             continue
         video_data.append({
             "title": data['items'][0]['snippet']['title'],
