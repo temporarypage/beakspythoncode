@@ -1,4 +1,3 @@
-# This gets tag info, like info, etc from a handles newest video(s)
 import os
 import requests
 import json
@@ -15,6 +14,24 @@ if not os.path.exists(os.path.join(dir_path, "api_key.txt")):
 with open(os.path.join(dir_path, "api_key.txt")) as f:
     api_key = f.read().strip()
 
+# function to get channel ID based on handle ID
+def get_channel_id(api_key, handle_id_input):
+    url = f"https://yt.jaybee.digital/api/channels?part=channels&handle={handle_id_input[1:]}"
+    retries = 0
+    while True:
+        try:
+            response = requests.get(url)
+            if response.status_code == 200:
+                channel_id = response.json()["items"][0]["id"]
+                if channel_id.startswith("UC"):
+                    return channel_id
+        except:
+            pass
+        retries += 1
+        if retries >= 5:
+            print("Error: failed to retrieve channel ID.")
+            exit()
+
 # prompt user for input
 print("Starting at newest, how many videos do you want statistics for?")
 number_of_videos = input()
@@ -22,23 +39,14 @@ number_of_videos = input()
 handle_id_input = input("Enter Handle id: ")
 handle_id = get_channel_id(api_key, handle_id_input) if handle_id_input.startswith('@') else handle_id_input
 
-
-# get channel ID based on handle ID
-url = f"https://yt.jaybee.digital/api/channels?part=channels&handle={handle_id[1:]}"
-retries = 0
-while True:
-    try:
-        response = requests.get(url)
-        if response.status_code == 200:
-            channel_id = response.json()["items"][0]["id"]
-            if channel_id.startswith("UC"):
-                break
-    except:
-        pass
-    retries += 1
-    if retries >= 5:
-        print("Error: failed to retrieve channel ID.")
-        exit()
+# fetch channel ID
+url = f"https://www.googleapis.com/youtube/v3/search?key={api_key}&part=snippet&type=channel&q={handle_id}"
+response = requests.get(url)
+if response.status_code == 200:
+    channel_id = response.json()["items"][0]["snippet"]["channelId"]
+else:
+    print("Error: failed to retrieve channel ID.")
+    exit()
 
 # fetch statistics and tags for channel's newest videos
 url = f"https://www.googleapis.com/youtube/v3/search?key={api_key}&channelId={channel_id}&part=snippet,id&order=date&maxResults={number_of_videos}"
