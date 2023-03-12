@@ -1,42 +1,41 @@
-pip install aiohttp
-pip install aiosignal
-pip install async-timeout
-pip install attrs
-pip install cachetools
-pip install certifi
-pip install charset-normalizer
-pip install cloudscraper
-pip install colorama
-pip install discord
-pip install discord.py
-pip install frozenlist
-pip install google-api-core
-pip install google-api-python-client
-pip install google-auth
-pip install google-auth-httplib2
-pip install google-auth-oauthlib
-pip install googleapis-common-protos
-pip install httplib2
-pip install idna
-pip install multidict
-pip install oauth2client
-pip install oauthlib
-pip install Pillow
-pip install pip
-pip install protobuf
-pip install pyasn1
-pip install pyasn1-modules
-pip install pyfiglet
-pip install pyparsing
-pip install pytube
-pip install pytz
-pip install random-user-agent
-pip install requests
-pip install requests-oauthlib
-pip install requests-toolbelt
-pip install rsa
-pip install setuptools
-pip install six
-pip install uritemplate
-pip install urllib3
-pip install yarl
+aiohttp
+aiosignal
+async-timeout
+attrs
+cachetools
+certifi
+charset-normalizer
+colorama
+discord
+discord.py
+frozenlist
+google-api-core
+google-api-python-client
+google-auth
+google-auth-httplib2
+google-auth-oauthlib
+googleapis-common-protos
+httplib2
+idna
+multidict
+oauth2client
+oauthlib
+Pillow
+pip
+protobuf
+pyasn1
+pyasn1-modules
+pyfiglet
+pyparsing
+pytube
+pytz
+random-user-agent
+requests
+requests-oauthlib
+requests-toolbelt
+rsa
+setuptools
+six
+uritemplate
+urllib3
+yarl
