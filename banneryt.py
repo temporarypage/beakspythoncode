@@ -1,9 +1,9 @@
-# Takes handle id converts to channel id then a few thingys later then boom channel info
 import argparse
 import requests
 import time
 import os
 import webbrowser
+import json
 
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
@@ -76,7 +76,7 @@ def main():
         return
 
     with open(file_name, 'w') as f:
-        f.write(str(channel_info))
+        json.dump(channel_info, f, indent=4)
 
     print(f'Channel information saved to {file_name}')
     webbrowser.open(file_name)
