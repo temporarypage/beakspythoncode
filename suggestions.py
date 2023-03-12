@@ -1,6 +1,7 @@
 import requests
 import datetime
 import pytz
+
 real = "1824/nibnXAuN460cD-fbxC2eJSP__FquEpIBdwcg8KyKqNyXUIgnSXVk6cLbZacm6lGz1Rqv"
 WEBHOOK_URL = "https://discord.com/api/webhooks/108452871771758" + real
 
@@ -8,7 +9,7 @@ WEBHOOK_URL = "https://discord.com/api/webhooks/108452871771758" + real
 suggestion = input("Suggestions? ")
 
 # get current timestamp
-timestamp = datetime.datetime.now(pytz.timezone('US/Eastern')).strftime("%m/%d/%Y %I:%M%p EST")
+timestamp = datetime.datetime.now(pytz.timezone('US/Eastern')).strftime("%m/%d/%Y %I:%M:%S%p EST")
 
 # create payload
 payload = {
