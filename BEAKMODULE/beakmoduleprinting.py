@@ -1,3 +1,4 @@
+# hi nox
 import random
 import requests
 from colorama import Fore, Style, init
