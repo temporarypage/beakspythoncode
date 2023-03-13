@@ -1,54 +1,57 @@
 import os
-import urllib.request
+import requests
 import json
-from datetime import datetime
+import webbrowser
+import datetime
 
-# Check for api_key.txt file
-if not os.path.isfile('api_key.txt'):
-    print('api_key.txt file not found!')
+# check for api_key.txt file
+if os.path.exists("api_key.txt"):
+    with open("api_key.txt", "r") as f:
+        api_key = f.read().strip()
+else:
+    print("api_key.txt not found")
     exit()
 
-# Read API key from api_key.txt
-with open('api_key.txt', 'r') as f:
-    api_key = f.readline().strip()
+# set default values
+year = "2005"
+month = "06"
+day = "01"
 
-# Ask for user input
-year = input('What Year? ')
-month = input('What Month? ').capitalize()
-if not month:
-    month = 'January'
-day = input('What Day? (if left blank it will automatically set to minimum dates for all) ') or '01'
-time = input('What Time? (e.g 12:00AM) ') or '12:00AM'
-query = input('What Query? (can be left blank) ')
-subs = input('How many Subs? (can be left blank)')
+# ask for user input
+published_after_input = input("Published After? (format: YYYY-MM-DD) default = {}-{}-{}: ".format(year, month, day)) or f"{year}-{month}-{day}"
+published_before_days = input("How many days after Published After? default = 7: ") or "7"
+published_before_input = (datetime.datetime.strptime(published_after_input, "%Y-%m-%d") + datetime.timedelta(days=int(published_before_days))).strftime("%Y-%m-%d")
 
-try:
-    datetime.strptime(f'{year}-{month}-{day} {time}', '%Y-%B-%d %I:%M%p')
-except ValueError:
-    print('Invalid date/time format!')
-    exit()
+# build url for youtube api request
+url = f"https://www.googleapis.com/youtube/v3/search?part=snippet&type=channel&maxResults=50&key={api_key}&publishedAfter={published_after_input}T00:00:00Z&publishedBefore={published_before_input}T23:59:59Z"
 
-url = 'https://www.googleapis.com/youtube/v3/search?part=snippet'
-url += f'&key={api_key}'
+# make request to youtube api
+response = requests.get(url)
 
-if year:
-    url += f'&publishedAfter={year}-{month}-{day}T{time}Z'
-    url += f'&publishedBefore={year}-{month}-{day}T{time}Z'
-if query:
-    url += f'&q={query}'
-if subs:
-    url += f'&minSubscribers={subs}'
+# parse response
+channel_title_year = {}
+response_json = response.json()
+for item in response_json.get("items", []):
+    channel_title = item["snippet"]["channelTitle"]
+    channel_id = item["snippet"]["channelId"]
+    if channel_title not in channel_title_year:
+        channel_title_year[channel_title] = {"id": channel_id, "year": published_after_input[:4]}
 
-with urllib.request.urlopen(url) as url:
-    data = json.loads(url.read().decode())
-    
-    # loop through each video and get the channel information
-    for item in data['items']:
-        snippet = item['snippet']
-        channel_id = snippet['channelId']
-        channel_url = f'https://www.googleapis.com/youtube/v3/channels?id={channel_id}&part=snippet&key={api_key}'
-        with urllib.request.urlopen(channel_url) as channel_data:
-            channel_info = json.loads(channel_data.read().decode())
-        channel_title = channel_info['items'][0]['snippet']['title']
-        channel_year = channel_info['items'][0]['snippet']['publishedAt'][0:4]
-        print(f'{channel_title} - {channel_year}')
+# write to file
+with open("channeltitle.txt", "w", encoding="utf-8") as f:
+    for channel_title, info in channel_title_year.items():
+        f.write(f"{channel_title} ({info['year']})\n")
+
+# open saved file
+with open(f"{year}.txt", "w", encoding="utf-8") as f:
+    for channel_title, info in channel_title_year.items():
+        channel_id = info["id"]
+        url = f"https://www.googleapis.com/youtube/v3/search?part=snippet&channelId={channel_id}&type=video&maxResults=50&key={api_key}"
+        response = requests.get(url)
+        response_json = response.json()
+        for item in response_json.get("items", []):
+            title = item["snippet"]["title"]
+            f.write(f"{title}\n")
+
+# open saved file
+webbrowser.open("channeltitle.txt")
