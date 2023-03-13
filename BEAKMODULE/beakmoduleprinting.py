@@ -10,7 +10,7 @@ os.system("mode con: cols=200 lines=40")
 
 sitehalf = "https://raw.githubusercontent.com/temporarypage/beakspythoncode/main/BEAKMODULE/"
 filenames = ["1.txt", "2.txt", "3.txt", "4.txt", "rare.txt"]
-filename = random.choices(filenames, weights=[7.5, 7.5, 7.5, 7.5, 1], k=1)[0]
+filename = random.choices(filenames, weights=[7.5, 7.5, 7.5, 7.5, 1.5], k=1)[0]
 url = sitehalf + filename
 
 response = requests.get(url)
