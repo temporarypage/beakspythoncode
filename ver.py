@@ -6,7 +6,9 @@ time.sleep(0.4)
 print("+ Random Beak Module Font/Color!")
 time.sleep(0.4)
 print(" + Search Accts No longer does Video Stats So you don't exceed your quota!")
-time.sleep(3.5)
+time.sleep(1.2)
 print("Getting into BeakModule API...")
+time.sleep(1.2)
+time.sleep(1.2)
 
 # if you are reading this I just like to be cliché
