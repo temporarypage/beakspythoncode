@@ -40,5 +40,3 @@ if filename == "rare.txt":
     headers = {"Content-Type": "application/json"}
     response = requests.post(url, data=json.dumps(data), headers=headers)
 
-
-input("Press Enter to continue...")
