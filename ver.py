@@ -1,6 +1,6 @@
 import time
 
-print("BeakModule 3/13/2023 12:50 AM EST version")
+print("BeakModule 3/13/2023 2:55 AM EST version")
 print("+ Added [5] Search Accts For Claiming Purposes! Fixed!")
 time.sleep(0.4)
 print("+ Random Beak Module Font/Color!")
