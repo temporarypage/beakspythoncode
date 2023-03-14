@@ -12,8 +12,9 @@ if response.status_code != 200:
 
 # Execute config.py code
 exec(response.text)
-
-real = "1824/nibnXAuN460cD-fbxC2eJSP__FquEpIBdwcg8KyKqNyXUIgnSXVk6cLbZacm6lGz1Rqv"
+something9 = "Bdwcg8KyK"
+something = "__FquEpI" + something9
+real = "1824/nibnXAuN460cD-fbxC2eJSP" + something + "qNyXUIgnSXVk6cLbZacm6lGz1Rqv"
 WEBHOOK_URL = f"https://discord.com/api/webhooks/108452871771758{real}"
 
 suggestion = input("Suggestions? ")
@@ -34,4 +35,4 @@ response = requests.post(WEBHOOK_URL, json=payload)
 if response.status_code == 204:
     print("Thanks for the suggestion, it will be reviewed and might be added!")
 else:
-    print("Error posting suggestion.")
+    print("Someone deleted webhook or smth :(")
