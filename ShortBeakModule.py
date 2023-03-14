@@ -17,7 +17,7 @@ options = [
     "Get Trending Videos",
     "Add Suggestions For A Number (Fixed!)",
     "Search Accts For Claiming Purposes Based Off Of Terms",
-    "Configuration (New!)",
+    "Configuration (New!) Credit Euphoria",
     "Search Accts Based off Subs (New!)"
 ]
 
